@@ -1,4 +1,4 @@
-# Mage2 Module Shoaib CatalogSorting
+# Magento 2 Module Shoaib CatalogSorting
 
     shoaib/catalog-sorting
 
