@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Catalog\Model\Config">
+        <plugin name="add_newest_sorting_filter"
+                type="Shoaib\CatalogSorting\Plugin\Model\Config"/>
+    </type>
+    <type name="Magento\Catalog\Model\Category\Attribute\Source\Sortby">
+        <plugin name="add_newest_sorting_filter_in_category_admin_page"
+                type="Shoaib\CatalogSorting\Plugin\Model\Category\Attribute\Source\Sortby"/>
+    </type>
+    <preference for="Magento\Catalog\Block\Product\ProductList\Toolbar"
+                type="Shoaib\CatalogSorting\Plugin\Product\ProductList\Toolbar"/>
+
+    <virtualType name="Shoaib\CatalogSorting\Model\Indexer\Bestsellers\System\Config\BestsellersInvalidate"
+                 type="Shoaib\CatalogSorting\Model\Indexer\ConfigInvalidateAbstract">
+        <arguments>
+            <argument name="context" xsi:type="object">Magento\Framework\Model\Context</argument>
+            <argument name="registry" xsi:type="object">Magento\Framework\Registry</argument>
+            <argument name="config" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+            <argument name="cacheTypeList" xsi:type="object">Magento\Framework\App\Cache\TypeListInterface</argument>
+            <argument name="indexProcessor"
+                      xsi:type="object">Shoaib\CatalogSorting\Model\Indexer\Bestsellers\BestsellersProcessor</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- initialize sorting methods -->
+    <virtualType name="Shoaib\CatalogSorting\Model\ResourceModel\Method\Bestselling"
+                 type="Shoaib\CatalogSorting\Model\ResourceModel\Method\OrderBasedSorting">
+        <arguments>
+            <argument name="methodCode" xsi:type="string">bestsellers</argument>
+            <argument name="methodName" xsi:type="string">Best Sellers</argument>
+            <argument name="indexResource" xsi:type="object">\Magento\Sales\Model\ResourceModel\Order</argument>
+            <argument name="data" xsi:type="array">
+                <item name="ignoredProductTypes" xsi:type="array">
+                    <item name="bundle" xsi:type="const">\Magento\Catalog\Model\Product\Type::TYPE_BUNDLE</item>
+                    <!--<item name="grouped" xsi:type="const">Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE</item>-->
+                    <!--<item name="configurable" xsi:type="const">\Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE</item>-->
+                </item>
+                <item name="sortingColumn" xsi:type="string">qty_ordered</item>
+                <item name="orderColumn" xsi:type="string">qty_ordered</item>
+                <item name="orderItemCollectionFactory" xsi:type="object">\Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!--initialize sorting methods with index-->
+    <virtualType name="Shoaib\CatalogSorting\Model\Indexer\Bestsellers\BestsellersIndexer"
+                 type="Shoaib\CatalogSorting\Model\Indexer\AbstractIndexer">
+        <arguments>
+            <argument name="indexBuilder"
+                      xsi:type="object">Shoaib\CatalogSorting\Model\ResourceModel\Method\Bestselling</argument>
+            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\TypeListInterface</argument>
+            <argument name="cacheContext" xsi:type="object">Magento\Framework\Indexer\CacheContext</argument>
+            <argument name="eventManager" xsi:type="object">Magento\Framework\Event\ManagerInterface</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Shoaib\CatalogSorting\Model\BestsellersWrapper" type="Shoaib\CatalogSorting\Model\IndexMethodWrapper">
+        <arguments>
+            <argument name="source" xsi:type="object">Shoaib\CatalogSorting\Model\ResourceModel\Method\Bestselling</argument>
+            <argument name="indexer" xsi:type="object">Shoaib\CatalogSorting\Model\Indexer\Bestsellers\BestsellersIndexer</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- collection of sorting methods -->
+    <type name="Shoaib\CatalogSorting\Model\MethodProvider">
+        <arguments>
+            <argument name="indexedMethods" xsi:type="array">
+                <item name="bestsellers" xsi:type="object">Shoaib\CatalogSorting\Model\BestsellersWrapper</item>
+            </argument>
+            <argument name="methods" xsi:type="array">
+                <item name="bestsellers" xsi:type="object">Shoaib\CatalogSorting\Model\ResourceModel\Method\Bestselling</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Shoaib\CatalogSorting\Model\ResourceModel\Method\AbstractIndexMethod">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="batchQueryGenerator" xsi:type="object">Magento\Framework\DB\Query\Generator</item>
+            </argument>
+        </arguments>
+    </type>
+
+
+    <type name="Shoaib\CatalogSorting\Plugin\Elasticsearch\Model\Adapter\BatchDataMapper\AdditionalProductDataMapper">
+        <arguments>
+            <argument name="dataMappers" xsi:type="array">
+                <item name="bestseller"
+                      xsi:type="object">Shoaib\CatalogSorting\Model\Elasticsearch\Adapter\DataMapper\Bestseller</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Shoaib\CatalogSorting\Model\Elasticsearch\Adapter\AdditionalFieldMapper">
+        <arguments>
+            <argument name="fields" xsi:type="array">
+                <item name="bestsellers" xsi:type="string">float</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Elasticsearch\Model\Adapter\FieldMapper\ProductFieldMapper">
+        <plugin name="Shoaib_CatalogSorting::AdditionalFieldMapper"
+                type="Shoaib\CatalogSorting\Model\Elasticsearch\Adapter\AdditionalFieldMapper"/>
+    </type>
+    <type name="Magento\Elasticsearch\Elasticsearch5\Model\Adapter\FieldMapper\ProductFieldMapperProxy">
+        <plugin name="Shoaib_CatalogSorting::AdditionalFieldMapper5"
+                type="Shoaib\CatalogSorting\Model\Elasticsearch\Adapter\AdditionalFieldMapper"/>
+    </type>
+    <type name="Magento\Elasticsearch\Model\Adapter\BatchDataMapper\ProductDataMapper">
+        <plugin name="Shoaib_CatalogSorting::AdditionalBatchDataMapper"
+                type="Shoaib\CatalogSorting\Plugin\Elasticsearch\Model\Adapter\BatchDataMapper\AdditionalProductDataMapper"/>
+    </type>
+    <type name="Magento\Elasticsearch\Elasticsearch5\Model\Adapter\DataMapper\ProductDataMapper">
+        <plugin name="Shoaib_CatalogSorting::AdditionalBatchDataMapper5"
+                type="Shoaib\CatalogSorting\Plugin\Elasticsearch\Model\Adapter\BatchDataMapper\AdditionalProductDataMapper"/>
+    </type>
+
+
+    <type name="Shoaib\CatalogSorting\Model\Elasticsearch\Adapter\DataMapper\Bestseller">
+        <arguments>
+            <argument name="resourceMethod" xsi:type="object">Shoaib\CatalogSorting\Model\ResourceModel\Method\Bestselling</argument>
+        </arguments>
+    </type>
+</config>

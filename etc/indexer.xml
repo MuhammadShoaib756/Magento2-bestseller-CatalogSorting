@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Indexer/etc/indexer.xsd">
+    <indexer id="catalog_sorting_bestseller" view_id="catalog_sorting_bestseller"
+             class="Shoaib\CatalogSorting\Model\Indexer\Bestsellers\BestsellersIndexer">
+        <title translate="true">Shoaib Bestsellers Performance Index</title>
+        <description translate="true">Index Bestsellers. 'Update on Save' - to execute once a day by cron</description>
+    </indexer>
+    <indexer id="catalogsearch_fulltext">
+        <dependencies>
+            <indexer id="catalog_sorting_bestseller" />
+        </dependencies>
+    </indexer>
+</config>

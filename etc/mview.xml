@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Mview/etc/mview.xsd">
+    <view id="catalog_sorting_bestseller" class="Shoaib\CatalogSorting\Model\Indexer\Bestsellers\BestsellersIndexer"
+          group="indexer"/>
+</config>

@@ -1,0 +1,22 @@
+{
+    "name": "shoaib/catalog-sorting",
+    "description": "Catalog new sorting features e.g. BestSeller, Newest Arrivals, Price Low to High, Price High to Low",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Shoaib",
+            "email": "shoaibakram756@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Shoaib\\CatalogSorting\\": ""
+        }
+    }
+}

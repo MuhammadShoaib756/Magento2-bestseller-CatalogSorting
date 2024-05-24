@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="index">
+        <job name="catalogsorting" instance="Shoaib\CatalogSorting\Cron\Reindex" method="execute">
+            <config_path>crontab/index/jobs/catalogsorting/schedule/cron_expr</config_path>
+        </job>
+    </group>
+</config>

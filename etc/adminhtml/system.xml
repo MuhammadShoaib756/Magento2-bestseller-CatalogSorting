@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="cloudydigitals" translate="label" sortOrder="999">
+            <label>Shoaib Extensions</label>
+        </tab>
+        <section id="bestsellers" sortOrder="10" showInWebsite="0" showInStore="0" showInDefault="1" translate="label">
+            <label>Best Sellers</label>
+            <tab>cloudydigitals</tab>
+            <resource>Shoman_BestSellers::config_shoaib_catalogsorting</resource>
+            <group id="general" sortOrder="10" showInWebsite="0" showInStore="0" showInDefault="1" translate="label">
+                <label>General Settings</label>
+                <field id="period" type="text" sortOrder="10" showInWebsite="0" showInStore="0" showInDefault="1"
+                       translate="label">
+                    <label>Period</label>
+                    <backend_model>Shoaib\CatalogSorting\Model\Indexer\Bestsellers\System\Config\BestsellersInvalidate</backend_model>
+                    <comment>Add time in days i.e. 30. Use this field to generate the best selling items in the last x
+                        days or Leave empty for life-time statistics.
+                    </comment>
+                </field>
+            </group>
+            <group id="cron" translate="label" type="text" sortOrder="130"
+                   showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Cron Settings</label>
+                <field id="frequency" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Frequency</label>
+                    <source_model>Magento\Cron\Model\Config\Source\Frequency</source_model>
+                    <backend_model>Shoaib\CatalogSorting\Model\Config\Backend\CronExpr</backend_model>
+                </field>
+                <field id="time" translate="label" type="time" sortOrder="11" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Start Time</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
