@@ -1,3 +1,4 @@
+# Compatible with Magento 2.4.7 version
 # Magento 2 Module Shoaib CatalogSorting
 
     shoaib/catalog-sorting
